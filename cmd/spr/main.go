@@ -192,6 +192,11 @@ VERSION: fork of {{.Version}}
 				Name:  "merge",
 				Usage: "Merge all mergeable pull requests",
 				Action: func(c *cli.Context) error {
+					force := c.Bool("force")
+					if force {
+						cfg.Repo.RequireChecks = false
+						cfg.Repo.RequireApproval = false
+					}
 					if c.IsSet("count") {
 						count := c.Uint("count")
 						stackedpr.MergePullRequests(ctx, &count)
@@ -206,6 +211,11 @@ VERSION: fork of {{.Version}}
 						Name:    "count",
 						Aliases: []string{"c"},
 						Usage:   "Merge a specified number of pull requests from the bottom of the stack",
+					},
+					&cli.BoolFlag{
+						Name:    "force",
+						Aliases: []string{"f"},
+						Usage:   "Force merge regardless of approval or check status",
 					},
 				},
 			},
